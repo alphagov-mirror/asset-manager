@@ -1,5 +1,6 @@
 # Asset Manager
 
+a
 Manages uploaded assets (images, PDFs etc.) for applications in the GOV.UK Publishing stack.
 
 ## Technical Documentation
