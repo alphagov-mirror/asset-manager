@@ -1116,4 +1116,22 @@ RSpec.describe Asset, type: :model do
       expect(asset.parent_document_url).to eql("parent-document-url")
     end
   end
+
+  describe "#access_limited?" do
+    let(:asset) { described_class.new }
+
+    it "is false if it access_limited and access_limited_organisation_ids arrays are empty" do
+      expect(asset.access_limited?).to be false
+    end
+
+    it "is true if it is an entry in access_limited array" do
+      asset.access_limited = %w[123]
+      expect(asset.access_limited?).to be true
+    end
+
+    it "is true if it is an entry in access_limited_organisation_ids array" do
+      asset.access_limited_organisation_ids = %w[435]
+      expect(asset.access_limited?).to be true
+    end
+  end
 end
