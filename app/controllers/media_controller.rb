@@ -10,6 +10,11 @@ class MediaController < ApplicationController
       return
     end
 
+    if asset.redirect_url.present?
+      redirect_to asset.redirect_url
+      return
+    end
+
     unless authorized_for_asset?(asset)
       error_403
       return
@@ -22,11 +27,6 @@ class MediaController < ApplicationController
 
     unless filename_current?
       redirect_to_current_filename
-      return
-    end
-
-    if asset.redirect_url.present?
-      redirect_to asset.redirect_url
       return
     end
 
