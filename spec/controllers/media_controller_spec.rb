@@ -493,6 +493,22 @@ RSpec.describe MediaController, type: :controller do
       end
     end
 
+    context "when draft asset has a redirect URL" do
+      let(:redirect_url) { "https://example.com/path/file.ext" }
+      let(:asset) { FactoryBot.create(:uploaded_asset, redirect_url: redirect_url, draft: true) }
+      let(:draft_assets_host) { AssetManager.govuk.draft_assets_host }
+
+      before do
+        request.headers["X-Forwarded-Host"] = draft_assets_host
+      end
+
+      it "redirects to redirect URL" do
+        get :download, params
+
+        expect(response).to redirect_to(redirect_url)
+      end
+    end
+
     context "when asset has a replacement" do
       let(:replacement) { FactoryBot.create(:uploaded_asset) }
       let(:asset) { FactoryBot.create(:uploaded_asset, replacement: replacement) }
