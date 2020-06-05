@@ -86,7 +86,13 @@ class Asset
     after_transition to: :uploaded do |asset, _|
       asset.save!
       asset.remove_file!
-      FileUtils.rmdir(File.dirname(asset.file.path))
+      dir = File.dirname(asset.file.path)
+      begin
+        FileUtils.rmdir(dir)
+      rescue Errno::ENOTEMPTY
+        files = Dir["#{dir}/*"].map { |path| path.split("/").last }
+        raise "Attempted to delete non-empty directory #{dir}. Contents: #{files}"
+      end
     end
   end
 

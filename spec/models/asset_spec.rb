@@ -1011,6 +1011,7 @@ RSpec.describe Asset, type: :model do
     context "when asset is clean" do
       let(:asset) { FactoryBot.create(:clean_asset) }
       let(:path) { asset.file.path }
+      let(:dir) { File.dirname(path) }
 
       it "changes asset state to uploaded" do
         asset.upload_success!
@@ -1034,6 +1035,13 @@ RSpec.describe Asset, type: :model do
         asset.upload_success!
 
         expect(File.exist?(File.dirname(path))).to be_falsey
+      end
+
+      it "provides detail if the directory deletion fails" do
+        FileUtils.cp(path, "#{dir}/some_other_file.csv")
+
+        expect { asset.upload_success! }
+          .to raise_error "Attempted to delete non-empty directory #{dir}. Contents: [\"some_other_file.csv\"]"
       end
     end
 
